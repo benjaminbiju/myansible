@@ -1,0 +1,25 @@
+---
+- name: Configure IIS and Deploy HTML
+  hosts: webserver1.ansibleproj.com  # same tag name used for the webserver instance
+  tasks:
+    - name: Ensure Default Website Directory Exists
+      win_file:
+        path: C:\inetpub\wwwroot
+        state: directory
+      # This task ensures that the default IIS website directory exists on the server.
+
+    - name: Create Hello World Index.html
+      win_shell: |
+        Set-Content -Path C:\inetpub\wwwroot\index.html -Value "<html><body><h1>Hello World!</h1></body></html>"
+      # This task uses the win_shell module to run PowerShell commands on the Windows server.
+      # It creates a simple "Hello World" HTML content and saves it to index.html in the IIS directory.
+
+    - name: Update Hosts File
+      win_shell: Add-Content -Path C:\Windows\System32\drivers\etc\hosts -Value "{{ inventory_hostname }} {{ hostvars[inventory_hostname]['ec2_private_ip'] }}"
+      # This task uses the win_shell module to add an entry to the Windows hosts file.
+      # It adds an entry with the inventory_hostname (the web server name from the tag) and the EC2 instance's private IP address.
+      # This helps in mapping the server name to the IP address.
+
+    - name: Restart IIS
+      win_shell: iisreset
+      # This task uses the win_shell module to restart the IIS service on the Windows server.
