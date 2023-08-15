@@ -1,0 +1,20 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFormation template to create an EC2 instance with IIS
+
+Resources:
+  MyInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-07dc9c1fa43628820  # Win Server 2019 Base
+      KeyName: benz_2.pem
+      SecurityGroupIds:
+        - sg-09c1b84867128f9af  # Same sg of Jenkins 
+      UserData:
+        Fn::Base64: |
+          <powershell>
+          Add-WindowsFeature Web-Server
+          </powershell>
+      Tags:
+        - Key: Name
+          Value: webserver1.ansibleproj.com
