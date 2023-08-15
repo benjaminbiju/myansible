@@ -1,0 +1,11 @@
+---
+- name: Deploy CloudFormation Stack for IIS
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Create CloudFormation Stack
+      cloudformation:
+        stack_name: IIS-Stack
+        state: present
+        region: ap-southeast-1
+        template: "home/ec2-user/ansible/playbooks/cf_template.yml"
